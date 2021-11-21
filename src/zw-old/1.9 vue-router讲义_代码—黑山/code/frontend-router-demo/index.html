@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <div>
+      <h1>hash 路由</h1>
+      <a href="#/list">列表页</a>
+      <a href="#/detail">详情页</a>
+      <a href="#/other">404</a>
+    </div>
+
+    <div id="history-box">
+      <h1>history 路由</h1>
+      <a href="/web/list">列表页</a>
+      <a href="/web/detail">详情页</a>
+      <a href="/web/other">404</a>
+    </div>
+
+    <div id="app" style="border: 1px solid black; min-height: 200px;"></div>
+  </div>
+
+  <script>
+    // hash 路由 demo
+    // 定义路由映射表
+    var routerObj = {
+      '#/list': '<div>列表页</div>',
+      '#/detail': '<div>详情页</div>'
+    }
+
+    window.addEventListener('hashchange', function() {
+      // 监听hash路由变化
+      // 拿到映射对应的组件进行渲染
+      document.getElementById('app').innerHTML = routerObj[location.hash] || '404页面'
+    })
+
+  </script>
+
+  <script>
+    // history 路由demo
+    var routerHistoryObj = {
+      '/web/list': '<div>history 列表页</div>',
+      '/web/detail': '<div>history 详情页</div>'
+    }
+
+    // 为每个链接添加点击事件
+    var length = document.querySelectorAll('#history-box a[href]').length
+    for(var i = 0; i < length; i++) {
+      document.querySelectorAll('#history-box a[href]')[i].addEventListener('click', function(event) {
+        event.preventDefault();
+        window.history.pushState({}, null, event.currentTarget.getAttribute('href') );
+        handleHref();
+      })
+    }
+
+
+    // 监听前进/后退 引起的posstate事件
+    window.addEventListener('popstate', handleHref);
+
+    // 根据新的路由，显示新的组件
+    function handleHref () {
+      document.getElementById('app').innerHTML = routerHistoryObj[location.pathname] || '404页面'
+    }
+
+  </script>
+</body>
+</html>

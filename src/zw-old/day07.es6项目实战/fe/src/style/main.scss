@@ -1,0 +1,35 @@
+@import './reset.scss';
+
+$primary-color: #666;
+$bg-color: #eee;
+
+@mixin clearFix {
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+  }
+}
+
+.content_item {
+  margin: 0 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(211, 211, 211, .6);
+
+  .title {
+    font-size: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.image_list {
+  margin-top: 10px;
+  @include clearFix;
+
+  .image_item {
+    float: left;
+  }
+}

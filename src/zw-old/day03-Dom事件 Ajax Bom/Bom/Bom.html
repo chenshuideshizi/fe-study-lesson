@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Bom</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="bom">Bom</h1>
+<h1 id="1location">1.location</h1>
+<h2 id="11属性">1.1属性</h2>
+<p>Location.href  &quot;<a href="http://www.example.com:80/WileyCDA/?id=3&amp;name=lee#contents">http://www.example.com:80/WileyCDA/?id=3&amp;name=lee#contents</a>&quot;
+包含整个URL的一个DOMString</p>
+<p>Location.protocol &quot;http:&quot;
+包含URL对应协议的一个DOMString，最后有一个&quot;:&quot;。</p>
+<p>Location.host &quot;<a href="http://www.example.com:80">www.example.com:80</a>&quot;
+包含了域名的一个DOMString，可能在该串最后带有一个&quot;:&quot;并跟上URL的端口号。</p>
+<p>Location.hostname &quot;<a href="http://www.example.com">www.example.com</a>&quot;
+包含URL域名的一个DOMString。</p>
+<p>Location.port &quot;80&quot;
+包含端口号的一个DOMString。</p>
+<p>Location.pathname &quot;/WileyCDA/&quot;
+包含URL中路径部分的一个DOMString，开头有一个“/&quot;。</p>
+<p>Location.search &quot;?id=3&amp;name=lee&quot;
+包含URL参数的一个DOMString，开头有一个“?”。</p>
+<p>Location.hash &quot;#contents&quot;
+包含块标识符的DOMString，开头有一个“#”。</p>
+<p>Location.origin 只读  &quot;<a href="http://www.example.com">http://www.example.com</a>&quot;
+包含页面来源的域名的标准形式DOMString。</p>
+<h2 id="12用法">1.2用法</h2>
+<ol>
+<li>获取查询字符串(?id=3&amp;name=lee  =&gt; {id: 3, name: 'lee'})<pre><code><code><div> function getQueryStrings() {
+     // 1. 得到查询字符串 ?id=3&amp;name=lee
+     const search = location.search;
+
+     // 2.去掉问号 id=3&amp;name=lee
+     const qs = search.length ? search.substring(1) : '';
+
+     // 3.声明一个数据对象，保存结果
+     const args = {}
+
+     // 4.将字符串转换成二维数组 [ [id: 3], [name: 'lee'] ]
+     const qsList = qs.split('&amp;').map(item =&gt; item.split('='))
+
+     // 5.遍历二维数组
+     for(const item of qsList) {
+         const name = decodeURIComponent(item[0])
+         const value = decodeURIComponent(item[1])
+         if(name.length) {
+             args[name] = value
+         }
+     }
+     return args
+ }
+</div></code></code></pre>
+</li>
+<li>URLSearchParams<pre><code><code><div>var paramsString2 = &quot;?query=value&quot;; // location.search，也可以传入不带问号的查询字符串q=URLUtils.searchParams&amp;topic=api
+var searchParams2 = new URLSearchParams(paramsString2);
+searchParams2.has(&quot;query&quot;); // true 
+searchParams2.get(&quot;query&quot;); // value
+searchParams2.toString() // query=value 没有问号的查询字符串
+</div></code></code></pre>
+</li>
+<li>操作地址<pre><code><code><div>location.href = &quot;http://www.example.com&quot;;
+
+// 假设当前URL为http://www.example.com/WileyCDA/
+ 
+ // 把URL修改为http://www.example.com/WileyCDA/#section1
+ location.hash = &quot;#section1&quot;;
+ window.addEventListener('hashchange', function() {
+ console.log('The hash has changed!')
+ }, false);
+
+
+ // 把URL修改为http://www.example.com/WileyCDA/?q=javascript
+ location.search = &quot;?q=javascript&quot;;
+
+ // 把URL修改为http://www.somewhere.com/WileyCDA/
+ location.hostname = &quot;www.somewhere.com&quot;;
+
+ // 把URL修改为http://www.somewhere.com/mydir/
+ location.pathname = &quot;mydir&quot;;
+
+ // 把URL修改为http://www.somewhere.com:8080/WileyCDA/ 
+ Location.port = 8080;
+</div></code></code></pre>
+注意：除了修改hash之外，其余的都会重新请求页面。但是修改hash也会在浏览器生成一条记录</li>
+</ol>
+<h1 id="2navigator">2.navigator</h1>
+<h2 id="21作用标识浏览器">2.1作用：标识浏览器</h2>
+<h2 id="22常用的方法属性">2.2常用的方法/属性</h2>
+<h3 id="221navigatoruseragent-返回浏览器的用户代理字符串">2.2.1navigator.userAgent 返回浏览器的用户代理字符串</h3>
+<h3 id="222navagatorsendbacon-异步传输一些小数据">2.2.2navagator.sendBacon() 异步传输一些小数据</h3>
+<p>// 这个方法主要用于满足统计和诊断代码的需要，这些代码通常尝试在卸载（unload）文档之前向web服务器发送数据。</p>
+<pre><code><code><div>// 这导致了页面卸载被延迟
+window.addEventListener('unload', logData, false);
+
+function logData() {
+    var client = new XMLHttpRequest();
+    client.open(&quot;POST&quot;, &quot;/log&quot;, false); // 第三个参数表明是同步的 xhr
+    client.setRequestHeader(&quot;Content-Type&quot;, &quot;text/plain;charset=UTF-8&quot;);
+    client.send(analyticsData);
+}
+</div></code></code></pre>
+<pre><code><code><div>window.addEventListener('unload', logData, false);
+
+function logData() {
+    navigator.sendBeacon(&quot;/log&quot;, analyticsData);
+}
+</div></code></code></pre>
+<h3 id="223navigatorplugins-返回浏览器安装的插件数组">2.2.3navigator.plugins 返回浏览器安装的插件数组</h3>
+<h1 id="3history">3.history</h1>
+<h2 id="31方法">3.1方法</h2>
+<pre><code><code><div>history.go(1)
+history.go(-1)
+history.go(2)
+history.back()
+history.forward()
+</div></code></code></pre>
+<h2 id="32属性">3.2属性</h2>
+<pre><code><code><div>history.length // 表示历史记录中条目的个数，包括可以前进和后退的页面
+</div></code></code></pre>
+<h2 id="33历史状态管理-让开发者改变浏览器url而不用重新加载页面">3.3历史状态管理 (让开发者改变浏览器url，而不用重新加载页面)</h2>
+<pre><code><code><div>const state = { 'page_id': 1, 'user_id': 5 }
+const title = ''
+const url = 'hello-world.html'
+
+history.pushState(state, title, url)
+history.state // 拿到状态
+
+// 
+window.addEventListener('popstate', (event) =&gt; {
+    // 后退或前进的时候会拿到状态，第一个页面为null
+    console.log(event.state)
+})
+</div></code></code></pre>
+<pre><code><code><div>history.replaceState(stateObj, title[, url]);
+history.pushState(state, title, url)
+// 修改当前state，不传url
+// repalce 当前的router，当后退的时候跳过当前router
+</div></code></code></pre>
+<h1 id="4作业">4.作业</h1>
+<p>使用其他的方法实现查询字符串函数，比如正则</p>
+
+    </body>
+    </html>

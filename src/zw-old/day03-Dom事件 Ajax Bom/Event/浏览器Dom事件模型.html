@@ -1,0 +1,240 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title></title>
+<style id="system" type="text/css">h1,h2,h3,h4,h5,h6,p,blockquote {    margin: 0;    padding: 0;}body {    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;    font-size: 13px;    line-height: 18px;    color: #737373;    margin: 10px 13px 10px 13px;}a {    color: #0069d6;}a:hover {    color: #0050a3;    text-decoration: none;}a img {    border: none;}p {    margin-bottom: 9px;}h1,h2,h3,h4,h5,h6 {    color: #404040;    line-height: 36px;}h1 {    margin-bottom: 18px;    font-size: 30px;}h2 {    font-size: 24px;}h3 {    font-size: 18px;}h4 {    font-size: 16px;}h5 {    font-size: 14px;}h6 {    font-size: 13px;}hr {    margin: 0 0 19px;    border: 0;    border-bottom: 1px solid #ccc;}blockquote {    padding: 13px 13px 21px 15px;    margin-bottom: 18px;    font-family:georgia,serif;    font-style: italic;}blockquote:before {    content:"C";    font-size:40px;    margin-left:-10px;    font-family:georgia,serif;    color:#eee;}blockquote p {    font-size: 14px;    font-weight: 300;    line-height: 18px;    margin-bottom: 0;    font-style: italic;}code, pre {    font-family: Monaco, Andale Mono, Courier New, monospace;}code {    background-color: #fee9cc;    color: rgba(0, 0, 0, 0.75);    padding: 1px 3px;    font-size: 12px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;    border-radius: 3px;}pre {    display: block;    padding: 14px;    margin: 0 0 18px;    line-height: 16px;    font-size: 11px;    border: 1px solid #d9d9d9;    white-space: pre-wrap;    word-wrap: break-word;}pre code {    background-color: #fff;    color:#737373;    font-size: 11px;    padding: 0;}@media screen and (min-width: 768px) {    body {        width: 748px;        margin:10px auto;    }}</style><style id="custom" type="text/css"></style></head>
+<style>img {max-width: 600px;} p,li {font-size: 16px; color: #000;}</style>
+<body marginheight="0"><h1>1.基础知识</h1>
+<h2>1.1事件流</h2>
+<h3>1.1.1为什么有事件流</h3>
+<p><img src="./3891607157714_.pic.jpg" alt="avatar">
+
+</p>
+<h3>1.1.2捕获阶段</h3>
+<p><img src="./3901607158150_.pic.jpg" alt="avatar">
+
+
+</p>
+<h3>1.1.3目标阶段</h3>
+<p><img src="./3911607158165_.pic.jpg" alt="avatar">
+
+
+</p>
+<h3>1.1.4冒泡阶段</h3>
+<p><img src="./3931607158422_.pic.jpg" alt="avatar">
+
+
+</p>
+<h3>1.1.5完整顺序</h3>
+<iframe src="https://codesandbox.io/embed/events-ihznq?fontsize=14&amp;hidenavigation=1&amp;theme=dark" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="Events" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+
+<ul>
+<li>在一个事件发生时，捕获过程跟冒泡过程总是先后发生，跟你是否监听毫无关联</li>
+<li>target</li>
+<li>currentTarget</li>
+<li>冒泡or捕获</li>
+<li>捕获是计算机处理事件的逻辑，而冒泡是人类处理事件的逻辑。</li>
+</ul>
+<h2>1.2 事件处理程序</h2>
+<p>注册事件<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener">addEventListener</a>用法
+</p>
+<pre><code>target.addEventListener(type, listener, useCapture = false)
+
+target.addEventListener(type, listener, options)
+
+listener: 回调函数 // 或者实现了EventListener接口的对象
+
+/**
+options: {
+    once：只执行一次
+    passive：承诺此事件监听不会调用 preventDefault，这有助于性能。
+    useCapture：是否捕获（否则冒泡）
+}
+**/
+`</code></pre>
+<p>删除绑定的事件 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/removeEventListener">removeEventListener</a>
+
+</p>
+<pre><code>target.removeEventListener(type, listener[, options]);
+
+target.removeEventListener(type, listener[, useCapture]);</code></pre>
+<p>listener一定要与addEventLinstener的listener相同
+
+
+</p>
+<iframe src="https://codesandbox.io/embed/lucid-borg-i2j0z?fontsize=14&amp;hidenavigation=1&amp;theme=dark" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="lucid-borg-i2j0z" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+
+<p>dom0事件处理程序
+</p>
+<pre><code>let btn = document.getElementById("myBtn");
+btn.onclick = function() {
+  console.log("Clicked");
+};
+btn.onclick = null; // 移除事件处理程序
+
+&lt;input type="button" value="Click Me" onclick="console.log('Clicked')"/&gt;</code></pre>
+<h2>1.3 事件委托</h2>
+<pre><code>&lt;ul id="myLinks"&gt;
+  &lt;li id="goSomewhere"&gt;Go somewhere&lt;/li&gt;
+  &lt;li id="doSomething"&gt;Do something&lt;/li&gt;
+  &lt;li id="sayHi"&gt;Say hi&lt;/li&gt;
+&lt;/ul&gt;
+
+const item1 = document.getElementById("goSomewhere");
+
+const item2 = document.getElementById("doSomething");
+
+const item3 = document.getElementById("sayHi");
+
+item1.addEventListener("click", (event) =&gt; {
+  location.href = "http:// www.wrox.com";
+});
+
+item2.addEventListener("click", (event) =&gt; {
+  document.title = "I changed the document's title";
+});
+
+item3.addEventListener("click", (event) =&gt; {
+  console.log("hi");
+});</code></pre>
+<pre><code>const list = document.getElementById("myLinks");
+
+list.addEventListener("click", (event) =&gt; {
+  const target = event.target;
+  switch(target.id) {
+    case "doSomething":
+      document.title = "I changed the document's title";
+      break;
+    case "goSomewhere":
+      location.href = "http:// www.wrox.com";
+      break;
+    case "sayHi":
+      console.log("hi");
+      break;
+} });</code></pre>
+<ul>
+<li>不用等待页面渲染出元素</li>
+<li>减少事件的绑定，可以减少dom引用，减少页面内存</li>
+</ul>
+<h2>1.4 事件类型</h2>
+<ul>
+<li>并不是所有的事件都会冒泡。（mouseover和mouseenter两个事件有什么区别）</li>
+<li>mounseenter把鼠标光标从外部元素移入到内部时触发。不会冒泡，在经过后代的时候也不会触发。</li>
+<li>mouseover把鼠标光标移入到内部时触发。<iframe src="https://codesandbox.io/embed/mouseentermouseover-26nce?fontsize=14&amp;hidenavigation=1&amp;theme=dark" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="mouseenter_mouseover" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+
+
+</li>
+</ul>
+<h2>1.5 事件对象</h2>
+<p>target currentTarget
+
+</p>
+<p>阻止事件传播 <code>event.stopPropagation()</code>
+<em> 无论是捕获阶段还是冒泡阶段，均可阻止
+</em> 与stopImmediatePropagation()的区别，stopImmediatePropagation = 阻止调用后续事件处理程序 + stopPropagation
+* IE8及以下只有冒泡，因此 <code>window.event.cancelBubble = true</code> 只能阻止冒泡
+
+</p>
+<p>阻止默认行为 <code>event.preventDefault()</code>
+<em> 属性 <code>event.defaultPrevented</code>
+</em> 常见的默认行文
+    * a标签
+</p>
+<iframe src="https://codesandbox.io/embed/winter-cache-xt0e8?fontsize=14&amp;hidenavigation=1&amp;theme=dark" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="winter-cache-xt0e8" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+
+<pre><code>* checkbox
+* 输入框
+* 表达默认提交</code></pre>
+<h2>1.6 自定义事件</h2>
+<h3>1.6.1触发内置事件（比如代码里触发click事件）</h3>
+<pre><code>// 1. 生成事件对象实例 const evt = new MouseEvent('click')
+// 2. 触发事件 target.dispatchEvent(evt);</code></pre>
+<h3>1.6.2 自定义事件名</h3>
+<pre><code>// 1.生成事件
+var event = new Event('build'); // 如果想要传参的话，new CustomEvent('build', { 'detail': elem.dataset.time });
+
+// 2.监听事件
+elem.addEventListener('build', function (e) { ... }, false);
+
+// 3.触发事件
+elem.dispatchEvent(event);</code></pre>
+<h2>1.7 CSS对事件的影响</h2>
+<p>pointer-events: none; // 比如加一层护眼遮罩
+touch-action: none
+
+</p>
+<h2>1.8 附录：IE事件兼容</h2>
+<pre><code>var EventUtil = {
+  addHandler: function(element, type, handler) {
+    if (element.addEventListener) {
+      element.addEventListener(type, handler, false);
+    } else if (element.attachEvent) {
+      element.attachEvent("on" + type, handler);
+    } else {
+      element["on" + type] = handler;
+    }
+  },
+  getEvent: function(event) {
+    return event ? event : window.event;
+  },
+  getTarget: function(event) {
+    return event.target || event.srcElement;
+  },
+  preventDefault: function(event) {
+    if (event.preventDefault) {
+      event.preventDefault();
+    } else {
+      event.returnValue = false;
+    }
+  },
+  removeHandler: function(element, type, handler) {
+    if (element.removeEventListener) {
+      element.removeEventListener(type, handler, false);
+    } else if (element.detachEvent) {
+      element.detachEvent("on" + type, handler);
+    } else {
+      element["on" + type] = null;
+    }
+  },
+  stopPropagation: function(event) {
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    } else {
+      event.cancelBubble = true;
+    }
+  } 
+};</code></pre>
+<h1>2. 本节常见面试题目</h1>
+<p>本节常见面试题目：
+
+</p>
+<p>什么是事件传播?
+
+</p>
+<p>什么是事件冒泡？
+
+</p>
+<p>什么是事件捕获？
+
+</p>
+<p>event.stopPropagation() 和 event.stopImmediatePropagation()方法之间有什么区别？
+
+</p>
+<p>如何知道是否在元素中使用了event.preventDefault()方法？
+
+</p>
+<p>mouseover和mouseenter两个事件有什么区别？
+
+</p>
+<p>Event对象中，target和currentTarget的区别？
+
+</p>
+<p>说一说什么是事件冒泡，如何阻止事件冒泡？如何阻止默认事件？
+是否了解事件委托？
+
+</p>
+<p>css3中有哪些属性可以直接影响JS中的事件？（可以讲一下pointer-events和touch-action属性吗）
+
+</p>
+<h1>3. 作业</h1>
+<p>输入框最多只能输入六个字符，如何实现？</p>
+</body></html>

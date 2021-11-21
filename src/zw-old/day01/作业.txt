@@ -1,0 +1,2 @@
+两种方法实现 promise-chain promise 链式调用
+下次课会讲~

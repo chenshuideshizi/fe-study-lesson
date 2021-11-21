@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <!-- action="/create_user" method="post" -->
+        <form id="userForm" name="userForm">
+            <div>
+                <label for="username">姓名：</label>
+                <input type="text" name="username1" id="username" />
+            </div>
+            <div>
+                <label for="mobile">手机：</label>
+                <input type="number" name="mobile1" id="mobile" />
+            </div>
+            <div>
+                <button type="submit" id="submit">提交</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+var btn = document.getElementById('submit')
+btn.addEventListener('click', function(e) {
+    e.preventDefault()
+    submitForm()
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function submitForm2() {
+    var xhr = new XMLHttpRequest()
+
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4) {
+            if(xhr.status === 200) {
+                alert(xhr.responseText);
+            } else {
+                console.error(xhr.status, xhr.responseText);
+            }
+        }
+    }
+
+    xhr.onerror = function() {
+        console.error(`xhr error事件触发 ${xhr}`)
+    }
+
+    // xhr.open('post', '/create_user', true)
+    xhr.open('post', 'http://localhost:3000/create_user', true)
+
+    var content = {
+        username: document.getElementById('username').value,
+        mobile: document.getElementById('mobile').value
+    }
+
+    // xhr.withCredentials = true;
+
+    // json 格式
+    // xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8')
+    // content = JSON.stringify(content);
+
+    // form 格式
+    // xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+    // content = `username=${content.username}&mobile=${content.mobile}`
+
+    content = new FormData(document.getElementById('userForm'))
+
+    xhr.send(content)
+
+}
+
+// function jsonPCallback(data) {
+//     console.log(`jsonp 请求成功返回的数据`, data)
+// }
+
+// function jsonP() {
+//     var script = document.createElement('script')
+//     script.src = 'http://localhost:3001/get_user?callback=jsonPCallback&userId=45'
+//     document.body.appendChild(script);
+// }
+// jsonP()
+</script>
+</html>

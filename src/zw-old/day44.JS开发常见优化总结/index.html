@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+        <script>
+            function isInArray(target, arr){
+                if(!target && target === document.documentElement){
+                    return false
+                }else if(arr.indexOf(target)>-1){
+                    return true
+                }else{
+                    // return isInArray(target.parentElement,arr)
+                }
+            }
+            function isScreen(traget){
+                if(!traget || !traget.getBoundingClientRect) return false;
+                var domTarget = traget.getBoundingClientRect(),screenWidth = window.innerWidth,screenHeight = window.innerHeight;
+                return domTarget.left >= 0 && domTarget.right < screenWidth && domTarget.top >= 0 && domTarget.bottom < screenHeight
+            }
+            var detailAll = []
+            new Promise(function(resolve,reject){
+                var observeDom = new MutationObserver(function(mutation){
+                if(!mutation.length) return;
+                var detail = {
+                    time: performance.now(),
+                    rooList:[]
+                }
+                mutation.forEach(function(ele){
+                     if(!ele || !ele.addedNodes || !ele.addedNodes.forEach) return;
+                     ele.addedNodes.forEach(function(eleChild){
+                        if(eleChild.nodeType === 1 && eleChild.nodeName !== "SCRIPT" && !isInArray(eleChild,detail.rooList) ){
+                            detail.rooList.push(eleChild)
+                        }
+                     })
+                })
+                if(detail.rooList.length){
+                    detailAll.push(detail)
+                }
+            })
+            observeDom.observe(document,{
+                childList:true,
+                subtree:true
+            })
+            setTimeout(function(){
+                observeDom.disconnect()
+                resolve(detailAll)
+                },3000)
+            }).then(function(res){
+                var resultTime
+                res.forEach(function(item){
+                    for(var i = 0; i<item.rooList.length; i++){
+                        if(isScreen(item.rooList[i])){
+                            resultTime = item.time
+                        }
+                    }
+                })
+                window.performance.getEntriesByType('resource').forEach(function(it){
+                    if(it.initiatorType === "img" && it.requestStart<resultTime && it.responseEnd>resultTime){
+                        resultTime = it.responseEnd
+                    }
+                })
+                console.log(resultTime)
+            })
+        </script>
+    </head>
+    <body>
+        <div>
+            <ul>
+                <li>111</li>
+                <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fyouimg1.c-ctrip.com%2Ftarget%2Ftg%2F035%2F063%2F726%2F3ea4031f045945e1843ae5156749d64c.jpg&refer=http%3A%2F%2Fyouimg1.c-ctrip.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1622468400&t=6cc6bd6cf892f484ce0151ad643dcdcc" alt="112321">
+                <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic3.16pic.com%2F00%2F01%2F11%2F16pic_111395_b.jpg&refer=http%3A%2F%2Fpic3.16pic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1622468400&t=442758cee526ba57dfbb2b923832dce3" alt="112321">
+                <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201410%2F20%2F20141020162058_UrMNe.jpeg&refer=http%3A%2F%2Fcdn.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1622468400&t=f556a07abe138e00ba4e6b28fff3aacf" alt="112321">
+                <li>222</li>
+                <li>333</li>
+            </ul>
+        </div>
+        <script>
+            window.onload = function(){
+                let t = performance.timing
+                console.log(t)
+                console.log('DNS查询耗时 ：' + (t.domainLookupEnd - t.domainLookupStart))
+                console.log('TCP链接耗时 ：' + (t.connectEnd - t.connectStart))
+                console.log('request请求耗时 ：' + (t.responseEnd - t.responseStart))
+                console.log('解析dom树耗时 ：' + (t.domComplete - t.domInteractive))
+                console.log('白屏时间 ：' + (t.responseStart - t.navigationStart))
+                console.log('domready时间 ：' + (t.domContentLoadedEventEnd - t.navigationStart))
+                setTimeout(function(){
+                    console.log('onload时间 ：' + (t.loadEventEnd - t.navigationStart))
+                },0)
+            }
+        </script>
+        <script src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    </body>
+</html>

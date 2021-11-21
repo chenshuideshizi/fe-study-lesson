@@ -1,0 +1,14 @@
+doctype html
+
+head
+  title 文章列表
+
+body
+  each article in articles
+    section.content_item#id
+      h3.title #{article.title}
+      p.abstract 简介
+      ul.image_list
+        each img in article.imageList
+          li.image_item
+            img.image(src=img)
